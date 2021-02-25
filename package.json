@@ -4,9 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watch --silent --colors --noStackTrace",
-    "test:staged": "jest --passWithNoTests --findRelatedTests --silent --noStackTrace",
-    "test:ci": "jest --coverage --noStackTrace --silent"
+    "test": "jest --silent --colors --noStackTrace --passWithNoTests",
+    "test:unit": "npm run test -- --watch -c jest-unit-config.js",
+    "test:integration": "npm run test -- --watch -c jest-integration-config.js",
+    "test:staged": "npm run test -- --findRelatedTests",
+    "test:ci": "npm run test -- --coverage"
   },
   "repository": {
     "type": "git",

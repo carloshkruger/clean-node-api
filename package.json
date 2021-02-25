@@ -12,6 +12,12 @@
     "type": "git",
     "url": "git+https://github.com/carloshkruger/clean-node-api.git"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run test:ci"
+    }
+  },
   "author": "",
   "license": "ISC",
   "bugs": {

@@ -98,6 +98,13 @@ describe('Auth UseCase', () => {
     await expect(promise).rejects.toThrow()
   })
 
+  test('should throw if no dependency is provided', async () => {
+    const sut = new AuthUseCase()
+    const promise = sut.auth('any_email@email.com', 'any_password')
+
+    await expect(promise).rejects.toThrow()
+  })
+
   test('should throw if LoadUserByEmailRepository nas no load method', async () => {
     const sut = new AuthUseCase({
       loadUserByEmailRepository: {}

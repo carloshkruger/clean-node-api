@@ -229,6 +229,16 @@ describe('Auth UseCase', () => {
       }),
       new AuthUseCase({
         loadUserByEmailRepository: makeLoadUserByEmailRepositorySpy(),
+        updateAccessTokenRepository: {
+          async update() {
+            throw new Error()
+          }
+        },
+        encrypter: makeEncrypter(),
+        tokenGenerator: makeTokenGenerator()
+      }),
+      new AuthUseCase({
+        loadUserByEmailRepository: makeLoadUserByEmailRepositorySpy(),
         encrypter: {
           async compare() {
             throw new Error()

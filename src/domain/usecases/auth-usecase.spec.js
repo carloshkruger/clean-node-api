@@ -179,21 +179,31 @@ describe('Auth UseCase', () => {
       new AuthUseCase({}),
       new AuthUseCase({
         loadUserByEmailRepository: {},
+        updateAccessTokenRepository: {},
         encrypter: {},
         tokenGenerator: {}
       }),
       new AuthUseCase({
         loadUserByEmailRepository: {},
+        updateAccessTokenRepository: makeUpdateAccessTokenRepository(),
         encrypter: makeEncrypter(),
         tokenGenerator: makeTokenGenerator()
       }),
       new AuthUseCase({
         loadUserByEmailRepository: makeLoadUserByEmailRepositorySpy(),
+        updateAccessTokenRepository: {},
+        encrypter: makeEncrypter(),
+        tokenGenerator: makeTokenGenerator()
+      }),
+      new AuthUseCase({
+        loadUserByEmailRepository: makeLoadUserByEmailRepositorySpy(),
+        updateAccessTokenRepository: makeUpdateAccessTokenRepository(),
         encrypter: {},
         tokenGenerator: makeTokenGenerator()
       }),
       new AuthUseCase({
         loadUserByEmailRepository: makeLoadUserByEmailRepositorySpy(),
+        updateAccessTokenRepository: makeUpdateAccessTokenRepository(),
         encrypter: makeEncrypter(),
         tokenGenerator: {}
       })

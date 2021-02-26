@@ -12,10 +12,20 @@ class LoadUserByEmailRepository {
   }
 }
 
-describe('LoadUserByEmail Repository', () => {
-  let client
-  let db
+let client
+let db
 
+const makeSut = () => {
+  const userModel = db.collection('users')
+  const sut = new LoadUserByEmailRepository(userModel)
+
+  return {
+    sut,
+    userModel
+  }
+}
+
+describe('LoadUserByEmail Repository', () => {
   beforeAll(async () => {
     client = await MongoClient.connect(process.env.MONGO_URL, {
       useNewUrlParser: true,
@@ -33,8 +43,7 @@ describe('LoadUserByEmail Repository', () => {
   })
 
   test('should return null if no user is found', async () => {
-    const userModel = db.collection('users')
-    const sut = new LoadUserByEmailRepository(userModel)
+    const { sut } = makeSut()
     const user = await sut.load('invalid_email@mail.com')
 
     expect(user).toBeNull()
@@ -42,13 +51,13 @@ describe('LoadUserByEmail Repository', () => {
 
   test('should return an user if user is found', async () => {
     const email = 'valid_email@mail.com'
-    const userModel = db.collection('users')
+
+    const { sut, userModel } = makeSut()
 
     await userModel.insertOne({
       email
     })
 
-    const sut = new LoadUserByEmailRepository(userModel)
     const user = await sut.load(email)
 
     expect(user.email).toBe(email)

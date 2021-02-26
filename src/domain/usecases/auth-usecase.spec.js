@@ -172,4 +172,42 @@ describe('Auth UseCase', () => {
       await expect(promise).rejects.toThrow()
     }
   })
+
+  test('should throw if any dependency throws', async () => {
+    const suts = [
+      new AuthUseCase({
+        loadUserByEmailRepository: {
+          async load() {
+            throw new Error()
+          }
+        },
+        encrypter: makeEncrypter(),
+        tokenGenerator: makeTokenGenerator()
+      }),
+      new AuthUseCase({
+        loadUserByEmailRepository: makeLoadUserByEmailRepositorySpy(),
+        encrypter: {
+          async compare() {
+            throw new Error()
+          }
+        },
+        tokenGenerator: makeTokenGenerator()
+      }),
+      new AuthUseCase({
+        loadUserByEmailRepository: makeLoadUserByEmailRepositorySpy(),
+        encrypter: makeEncrypter(),
+        tokenGenerator: {
+          async generate() {
+            throw new Error()
+          }
+        }
+      })
+    ]
+
+    for (const sut of suts) {
+      const promise = sut.auth('any_email@email.com', 'any_password')
+
+      await expect(promise).rejects.toThrow()
+    }
+  })
 })

@@ -1,6 +1,10 @@
 const MongoHelper = require('./mongo-helper')
 
 describe('Mongo Helper', () => {
+  afterAll(async () => {
+    await MongoHelper.disconnect()
+  })
+
   test('should reconnect when getDb() is invoked and client is disconnected', async () => {
     const sut = MongoHelper
 
@@ -15,5 +19,7 @@ describe('Mongo Helper', () => {
     await sut.getDb()
 
     expect(sut.db).toBeTruthy()
+
+    await sut.disconnect()
   })
 })

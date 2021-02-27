@@ -10,6 +10,8 @@ describe('Mongo Helper', () => {
 
     await sut.connect(process.env.MONGO_URL)
 
+    await sut.getDb()
+
     expect(sut.db).toBeTruthy()
 
     await sut.disconnect()

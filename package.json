@@ -2,8 +2,9 @@
   "name": "clean-node-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/main/index.js",
   "scripts": {
+    "start": "node src/main/index.js",
     "test": "jest --silent --colors --noStackTrace --passWithNoTests",
     "test:unit": "npm run test -- --watch -c jest-unit-config.js",
     "test:integration": "npm run test -- --watch -c jest-integration-config.js",
@@ -35,6 +36,7 @@
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.6.4",
     "validator": "^13.5.2"

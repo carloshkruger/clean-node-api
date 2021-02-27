@@ -12,7 +12,7 @@ const makeSut = () => {
   }
 }
 
-let db
+let db, fakeUserId
 
 describe('UpdateAccessToken Repository', () => {
   beforeAll(async () => {
@@ -21,7 +21,16 @@ describe('UpdateAccessToken Repository', () => {
   })
 
   beforeEach(async () => {
-    await db.collection('users').deleteMany()
+    const userModel = db.collection('users')
+    await userModel.deleteMany()
+
+    const fakeUser = await userModel.insertOne({
+      email: 'valid_email@email.com',
+      name: 'any_name',
+      password: 'hashed_password'
+    })
+
+    fakeUserId = fakeUser.ops[0]._id
   })
 
   afterAll(async () => {
@@ -30,56 +39,29 @@ describe('UpdateAccessToken Repository', () => {
 
   test('should update the user with the given access token', async () => {
     const { sut, userModel } = makeSut()
-
-    const fakeUser = await userModel.insertOne({
-      email: 'valid_email@email.com',
-      name: 'any_name',
-      password: 'hashed_password'
-    })
-
-    const userId = fakeUser.ops[0]._id
     const token = 'valid_token'
 
-    await sut.update(userId, token)
+    await sut.update(fakeUserId, token)
 
     const updatedFakeUser = await userModel.findOne({
-      _id: userId
+      _id: fakeUserId
     })
 
     expect(updatedFakeUser.accessToken).toBe(token)
   })
 
   test('should throw if no userModel is provided', async () => {
-    const userModel = db.collection('users')
-
     const sut = new UpdateAccessTokenRepository()
-
-    const fakeUser = await userModel.insertOne({
-      email: 'valid_email@email.com',
-      name: 'any_name',
-      password: 'hashed_password'
-    })
-
-    const userId = fakeUser.ops[0]._id
-
-    const promise = sut.update(userId, 'any_access_token')
+    const promise = sut.update(fakeUserId, 'any_access_token')
 
     await expect(promise).rejects.toThrow()
   })
 
   test('should throw if no params are provided', async () => {
-    const { sut, userModel } = makeSut()
-
-    const fakeUser = await userModel.insertOne({
-      email: 'valid_email@email.com',
-      name: 'any_name',
-      password: 'hashed_password'
-    })
-
-    const userId = fakeUser.ops[0]._id
+    const { sut } = makeSut()
 
     await expect(sut.update()).rejects.toThrow(new MissingParamError('userId'))
-    await expect(sut.update(userId)).rejects.toThrow(
+    await expect(sut.update(fakeUserId)).rejects.toThrow(
       new MissingParamError('accessToken')
     )
   })

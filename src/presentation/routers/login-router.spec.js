@@ -141,25 +141,6 @@ describe('Login Router', () => {
     expect(httpResponse.body.accessToken).toEqual(authUseCaseSpy.accessToken)
   })
 
-  test('Should return 500 if AuthUseCase throws', async () => {
-    const { sut, authUseCaseSpy } = makeSut()
-
-    authUseCaseSpy.auth = async () => {
-      throw new Error()
-    }
-
-    const httpRequest = {
-      body: {
-        email: 'any_email@email.com',
-        password: 'any_password'
-      }
-    }
-
-    const httpResponse = await sut.route(httpRequest)
-
-    expect(httpResponse.statusCode).toBe(500)
-  })
-
   test('Should return 400 if an invalid e-mail is provided', async () => {
     const { sut, emailValidatorSpy } = makeSut()
     emailValidatorSpy.isEmailValid = false
@@ -175,25 +156,6 @@ describe('Login Router', () => {
 
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new InvalidParamError('email'))
-  })
-
-  test('Should return 500 if EmailValidator throws', async () => {
-    const { sut, emailValidatorSpy } = makeSut()
-
-    emailValidatorSpy.isValid = () => {
-      throw new Error()
-    }
-
-    const httpRequest = {
-      body: {
-        email: 'any_email@email.com',
-        password: 'any_password'
-      }
-    }
-
-    const httpResponse = await sut.route(httpRequest)
-
-    expect(httpResponse.statusCode).toBe(500)
   })
 
   test('Should call EmailValidator with correct email', async () => {
@@ -225,6 +187,39 @@ describe('Login Router', () => {
       new LoginRouter({
         authUseCase: makeAuthUseCaseSpy(),
         emailValidator: {}
+      })
+    ]
+
+    const httpRequest = {
+      body: {
+        email: 'any_email@email.com',
+        password: 'any_password'
+      }
+    }
+
+    for (const sut of suts) {
+      const httpResponse = await sut.route(httpRequest)
+
+      await expect(httpResponse.statusCode).toBe(500)
+      await expect(httpResponse.body).toEqual(new ServerError())
+    }
+  })
+
+  test('should throw if any dependency throws', async () => {
+    const suts = [
+      new LoginRouter({
+        async auth() {
+          throw new Error()
+        },
+        emailValidator: makeEmailValidatorSpy()
+      }),
+      new LoginRouter({
+        authUseCase: makeAuthUseCaseSpy(),
+        emailValidator: {
+          isValid() {
+            throw new Error()
+          }
+        }
       })
     ]
 

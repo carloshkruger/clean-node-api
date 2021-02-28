@@ -6,16 +6,15 @@ const makeSut = () => {
   return new UpdateAccessTokenRepository()
 }
 
-let db, fakeUserId
+let userModel, fakeUserId
 
 describe('UpdateAccessToken Repository', () => {
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL)
-    db = await MongoHelper.getDb()
+    userModel = await MongoHelper.getCollection('users')
   })
 
   beforeEach(async () => {
-    const userModel = db.collection('users')
     await userModel.deleteMany()
 
     const fakeUser = await userModel.insertOne({
@@ -37,7 +36,7 @@ describe('UpdateAccessToken Repository', () => {
 
     await sut.update(fakeUserId, token)
 
-    const updatedFakeUser = await db.collection('users').findOne({
+    const updatedFakeUser = await userModel.findOne({
       _id: fakeUserId
     })
 

@@ -1,5 +1,4 @@
 const bcrypt = require('bcrypt')
-
 const MissingParamError = require('../errors/missing-param-error')
 
 class Encrypter {

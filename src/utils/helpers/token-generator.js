@@ -15,7 +15,7 @@ class TokenGenerator {
       throw new MissingParamError('id')
     }
 
-    const token = jwt.sign(id, this.secret)
+    const token = jwt.sign({ id }, this.secret)
 
     return token
   }

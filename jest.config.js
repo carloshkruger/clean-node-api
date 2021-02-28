@@ -5,5 +5,5 @@ module.exports = {
   collectCoverageFrom: ['**/src/**/*.js', '!**/src/main/**'],
   preset: '@shelf/jest-mongodb',
   watchPathIgnorePatterns: ['globalConfig'],
-  roots: ['src', '__mocks__']
+  roots: ['src']
 }

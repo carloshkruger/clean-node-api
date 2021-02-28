@@ -34,9 +34,9 @@ class AuthUseCase {
       return null
     }
 
-    const accessToken = await this.tokenGenerator.generate(user.id)
+    const accessToken = await this.tokenGenerator.generate(user._id)
 
-    await this.updateAccessTokenRepository.update(user.id, accessToken)
+    await this.updateAccessTokenRepository.update(user._id, accessToken)
 
     return accessToken
   }

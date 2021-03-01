@@ -9,7 +9,7 @@
     "test:unit": "npm run test -- --watch -c jest-unit-config.js",
     "test:integration": "npm run test -- --watch -c jest-integration-config.js",
     "test:staged": "npm run test -- --findRelatedTests",
-    "test:ci": "npm run test -- --coverage"
+    "test:ci": "npx jest --clearCache && npm run test -- --coverage"
   },
   "repository": {
     "type": "git",
